@@ -2,13 +2,68 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Dashboard</title>
+  <title>Panel Personal</title>
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Firebase -->
+  <script type="module" src="js/firebase.js"></script>
+  <script type="module" src="js/dashboard.js"></script>
 </head>
 <body>
 
-<h2>Bienvenido a tu Panel</h2>
-<button onclick="logout()">Cerrar sesi�n</button>
+<div class="app">
 
-<script type="module" src="js/protected.js"></script>
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <h2>🧠 Mi Panel</h2>
+    <nav>
+      <button onclick="mostrarSeccion('tareas')">✅ Tareas</button>
+      <button onclick="mostrarSeccion('notas')">📝 Notas</button>
+      <button onclick="mostrarSeccion('habitos')">🔁 Hábitos</button>
+      <button onclick="mostrarSeccion('gastos')">💸 Gastos</button>
+      <hr>
+      <button class="logout" onclick="logout()">🚪 Salir</button>
+    </nav>
+  </aside>
+
+  <!-- CONTENIDO -->
+  <main class="contenido">
+
+    <!-- TAREAS -->
+    <section id="tareas" class="seccion activa">
+      <h1>✅ Tareas</h1>
+      <input type="text" id="nuevaTarea" placeholder="Nueva tarea">
+      <button onclick="agregarTarea()">Agregar</button>
+      <ul id="listaTareas"></ul>
+    </section>
+
+    <!-- NOTAS -->
+    <section id="notas" class="seccion">
+      <h1>📝 Notas</h1>
+      <textarea id="nuevaNota" placeholder="Escribí una nota..."></textarea>
+      <button onclick="agregarNota()">Guardar</button>
+      <div id="listaNotas"></div>
+    </section>
+
+    <!-- HABITOS -->
+    <section id="habitos" class="seccion">
+      <h1>🔁 Hábitos</h1>
+      <input type="text" id="nuevoHabito" placeholder="Nuevo hábito">
+      <button onclick="agregarHabito()">Agregar</button>
+      <ul id="listaHabitos"></ul>
+    </section>
+
+    <!-- GASTOS -->
+    <section id="gastos" class="seccion">
+      <h1>💸 Gastos</h1>
+      <input type="text" id="concepto" placeholder="Concepto">
+      <input type="number" id="monto" placeholder="Monto">
+      <button onclick="agregarGasto()">Agregar</button>
+      <ul id="listaGastos"></ul>
+    </section>
+
+  </main>
+</div>
+
 </body>
 </html>
