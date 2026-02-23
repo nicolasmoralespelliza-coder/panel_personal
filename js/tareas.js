@@ -1,4 +1,4 @@
-import { auth, db } from "./firebase.js";
+iimport { auth, db } from "./firebase.js";
 import {
   collection,
   addDoc,
@@ -10,12 +10,17 @@ document.addEventListener("DOMContentLoaded", () => {
   const lista = document.getElementById("listaTareas");
   const btn = document.getElementById("btnAgregar");
 
+  if (!input || !lista || !btn) {
+    console.error("Elementos HTML de tareas no encontrados");
+    return;
+  }
+
   auth.onAuthStateChanged(user => {
     if (!user) return;
 
     const tareasRef = collection(db, "usuarios", user.uid, "tareas");
 
-    // ESCUCHAR
+    // LISTENER CORRECTO
     onSnapshot(tareasRef, snapshot => {
       lista.innerHTML = "";
       snapshot.forEach(doc => {
@@ -25,11 +30,16 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
 
-    // AGREGAR
-    btn.onclick = async () => {
-      if (!input.value) return;
-      await addDoc(tareasRef, { texto: input.value });
+    // AGREGAR TAREA
+    btn.addEventListener("click", async () => {
+      if (!input.value.trim()) return;
+
+      await addDoc(tareasRef, {
+        texto: input.value.trim(),
+        fecha: new Date()
+      });
+
       input.value = "";
-    };
+    });
   });
 });
