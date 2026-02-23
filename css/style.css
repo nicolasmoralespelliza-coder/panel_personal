@@ -1,14 +1,106 @@
-body {
-  background: #121212;
-  color: white;
-  font-family: Arial;
-  text-align: center;
-  margin-top: 100px;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', sans-serif;
 }
 
-input, button {
-  display: block;
-  margin: 10px auto;
+body {
+  background: #0f172a;
+  color: #e5e7eb;
+}
+
+.app {
+  display: flex;
+  height: 100vh;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 240px;
+  background: #020617;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar h2 {
+  margin-bottom: 20px;
+  color: #38bdf8;
+}
+
+.sidebar button {
+  background: none;
+  border: none;
+  color: #e5e7eb;
+  text-align: left;
   padding: 10px;
-  width: 250px;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.sidebar button:hover {
+  background: #1e293b;
+}
+
+.sidebar .logout {
+  color: #f87171;
+}
+
+.sidebar hr {
+  margin: 15px 0;
+  border: 1px solid #1e293b;
+}
+
+/* CONTENIDO */
+.contenido {
+  flex: 1;
+  padding: 30px;
+  overflow-y: auto;
+}
+
+.seccion {
+  display: none;
+}
+
+.seccion.activa {
+  display: block;
+}
+
+h1 {
+  margin-bottom: 15px;
+}
+
+/* INPUTS */
+input, textarea {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0 10px;
+  border-radius: 6px;
+  border: none;
+}
+
+button {
+  background: #38bdf8;
+  color: #020617;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #0ea5e9;
+}
+
+ul {
+  list-style: none;
+  margin-top: 10px;
+}
+
+li {
+  background: #1e293b;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 6px;
 }
