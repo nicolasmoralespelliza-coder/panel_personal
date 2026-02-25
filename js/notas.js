@@ -2,36 +2,39 @@ import { auth, db } from "./firebase.js";
 import {
   collection,
   addDoc,
-  onSnapshot
+  onSnapshot,
+  deleteDoc,
+  doc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-const texto = document.getElementById("nuevaNota");
+const input = document.getElementById("nuevaNota");
 const btn = document.getElementById("btnAgregarNota");
 const lista = document.getElementById("listaNotas");
 
 auth.onAuthStateChanged(user => {
   if (!user) return;
 
-  const ref = collection(db, "usuarios", user.uid, "notas");
+  const notasRef = collection(db, "usuarios", user.uid, "notas");
 
-  onSnapshot(ref, snap => {
+  onSnapshot(notasRef, snap => {
     lista.innerHTML = "";
-    snap.forEach(doc => {
+    snap.forEach(n => {
       const div = document.createElement("div");
-      div.className = "nota";
-      div.textContent = doc.data().texto;
+      div.textContent = n.data().texto;
+
+      const btnBorrar = document.createElement("button");
+      btnBorrar.textContent = "Borrar";
+      btnBorrar.onclick = () =>
+        deleteDoc(doc(db, "usuarios", user.uid, "notas", n.id));
+
+      div.appendChild(btnBorrar);
       lista.appendChild(div);
     });
   });
 
   btn.addEventListener("click", async () => {
-    if (!texto.value.trim()) return;
-
-    await addDoc(ref, {
-      texto: texto.value,
-      fecha: new Date()
-    });
-
-    texto.value = "";
+    if (!input.value.trim()) return;
+    await addDoc(notasRef, { texto: input.value });
+    input.value = "";
   });
 });
