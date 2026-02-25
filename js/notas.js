@@ -18,23 +18,31 @@ auth.onAuthStateChanged(user => {
 
   onSnapshot(notasRef, snap => {
     lista.innerHTML = "";
-    snap.forEach(n => {
-      const div = document.createElement("div");
-      div.textContent = n.data().texto;
 
-      const btnBorrar = document.createElement("button");
-      btnBorrar.textContent = "Borrar";
-      btnBorrar.onclick = () =>
+    snap.forEach(n => {
+      const nota = document.createElement("div");
+      nota.className = "postit";
+
+      nota.innerHTML = `
+        <p>${n.data().texto}</p>
+        <button class="borrar-postit">✕</button>
+      `;
+
+      nota.querySelector("button").onclick = () =>
         deleteDoc(doc(db, "usuarios", user.uid, "notas", n.id));
 
-      div.appendChild(btnBorrar);
-      lista.appendChild(div);
+      lista.appendChild(nota);
     });
   });
 
   btn.addEventListener("click", async () => {
     if (!input.value.trim()) return;
-    await addDoc(notasRef, { texto: input.value });
+
+    await addDoc(notasRef, {
+      texto: input.value,
+      fecha: new Date()
+    });
+
     input.value = "";
   });
 });
