@@ -104,59 +104,31 @@ li {
   border-radius: 6px;
   margin-bottom: 6px;
 }
-import { auth, db } from "./firebase.js";
-import {
-  collection,
-  addDoc,
-  onSnapshot,
-  deleteDoc,
-  doc
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+#listaTareas {
+  margin-top: 15px;
+}
 
-const input = document.getElementById("nuevaTarea");
-const btn = document.getElementById("btnAgregarTarea");
-const lista = document.getElementById("listaTareas");
+.item-tarea {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  margin-bottom: 8px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 8px;
+}
 
-auth.onAuthStateChanged(user => {
-  if (!user) return;
+.item-tarea span {
+  color: #fff;
+}
 
-  const tareasRef = collection(db, "usuarios", user.uid, "tareas");
+.btn-borrar {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+}
 
-  // ESCUCHAR TAREAS
-  onSnapshot(tareasRef, snap => {
-    lista.innerHTML = "";
-
-    snap.forEach(d => {
-      const li = document.createElement("li");
-      li.className = "item-tarea";
-
-      const span = document.createElement("span");
-      span.textContent = d.data().texto;
-
-      const btnBorrar = document.createElement("button");
-      btnBorrar.textContent = "🗑️";
-      btnBorrar.className = "btn-borrar";
-
-      btnBorrar.addEventListener("click", async () => {
-        await deleteDoc(doc(db, "usuarios", user.uid, "tareas", d.id));
-      });
-
-      li.appendChild(span);
-      li.appendChild(btnBorrar);
-      lista.appendChild(li);
-    });
-  });
-
-  // AGREGAR TAREA
-  btn.addEventListener("click", async () => {
-    if (!input.value.trim()) return;
-
-    await addDoc(tareasRef, {
-      texto: input.value,
-      fecha: new Date()
-    });
-
-    input.value = "";
-  });
-});
-
+.btn-borrar:hover {
+  transform: scale(1.2);
+}
