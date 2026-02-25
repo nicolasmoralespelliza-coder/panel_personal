@@ -2,32 +2,54 @@ import { auth, db } from "./firebase.js";
 import {
   collection,
   addDoc,
-  onSnapshot
+  onSnapshot,
+  deleteDoc,
+  doc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-document.addEventListener("DOMContentLoaded", () => {
-  const input = document.getElementById("nuevaTarea");
-  const lista = document.getElementById("listaTareas");
-  const btn = document.getElementById("btnAgregarTarea");
+const input = document.getElementById("nuevaTarea");
+const btn = document.getElementById("btnAgregarTarea");
+const lista = document.getElementById("listaTareas");
 
-  auth.onAuthStateChanged(user => {
-    if (!user) return;
+auth.onAuthStateChanged(user => {
+  if (!user) return;
 
-    const ref = collection(db, "usuarios", user.uid, "tareas");
+  const tareasRef = collection(db, "usuarios", user.uid, "tareas");
 
-    onSnapshot(ref, snap => {
-      lista.innerHTML = "";
-      snap.forEach(d => {
-        const li = document.createElement("li");
-        li.textContent = d.data().texto;
-        lista.appendChild(li);
+  // ESCUCHAR TAREAS
+  onSnapshot(tareasRef, snap => {
+    lista.innerHTML = "";
+
+    snap.forEach(d => {
+      const li = document.createElement("li");
+      li.className = "item-tarea";
+
+      const span = document.createElement("span");
+      span.textContent = d.data().texto;
+
+      const btnBorrar = document.createElement("button");
+      btnBorrar.textContent = "🗑️";
+      btnBorrar.className = "btn-borrar";
+
+      btnBorrar.addEventListener("click", async () => {
+        await deleteDoc(doc(db, "usuarios", user.uid, "tareas", d.id));
       });
+
+      li.appendChild(span);
+      li.appendChild(btnBorrar);
+      lista.appendChild(li);
+    });
+  });
+
+  // AGREGAR TAREA
+  btn.addEventListener("click", async () => {
+    if (!input.value.trim()) return;
+
+    await addDoc(tareasRef, {
+      texto: input.value,
+      fecha: new Date()
     });
 
-    btn.addEventListener("click", async () => {
-      if (!input.value.trim()) return;
-      await addDoc(ref, { texto: input.value.trim() });
-      input.value = "";
-    });
+    input.value = "";
   });
 });
