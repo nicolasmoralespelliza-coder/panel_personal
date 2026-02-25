@@ -220,4 +220,9 @@ li button:hover {
     opacity: 1;
   }
 }
+/* ===== COLOR TEXTO POST-IT ===== */
+.postit,
+.postit p {
+  color: #1f2937 !important; /* gris oscuro, se lee perfecto */
+}
 
