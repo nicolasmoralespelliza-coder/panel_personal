@@ -1,21 +1,24 @@
+/* ===== RESET ===== */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
 }
 
 body {
-  background: #0f172a;
+  background: #0f172a; /* azul oscuro */
   color: #e5e7eb;
+  height: 100vh;
 }
 
+/* ===== APP LAYOUT ===== */
 .app {
   display: flex;
   height: 100vh;
 }
 
-/* SIDEBAR */
+/* ===== SIDEBAR ===== */
 .sidebar {
   width: 240px;
   background: #020617;
@@ -25,110 +28,130 @@ body {
 }
 
 .sidebar h2 {
-  margin-bottom: 20px;
+  margin-bottom: 30px;
+  text-align: center;
   color: #38bdf8;
 }
 
-.sidebar button {
-  background: none;
+.sidebar nav button {
+  background: transparent;
   border: none;
   color: #e5e7eb;
+  padding: 12px;
+  margin-bottom: 8px;
   text-align: left;
-  padding: 10px;
+  border-radius: 8px;
   cursor: pointer;
-  border-radius: 6px;
+  transition: 0.2s;
 }
 
-.sidebar button:hover {
+.sidebar nav button:hover {
   background: #1e293b;
 }
 
 .sidebar .logout {
-  color: #f87171;
+  margin-top: auto;
+  background: #7f1d1d;
 }
 
-.sidebar hr {
-  margin: 15px 0;
-  border: 1px solid #1e293b;
+.sidebar .logout:hover {
+  background: #991b1b;
 }
 
-/* CONTENIDO */
+/* ===== CONTENIDO ===== */
 .contenido {
   flex: 1;
   padding: 30px;
   overflow-y: auto;
 }
 
+/* ===== SECCIONES ===== */
 .seccion {
   display: none;
+  animation: fade 0.3s ease;
 }
 
 .seccion.activa {
   display: block;
 }
 
-h1 {
-  margin-bottom: 15px;
+@keyframes fade {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-/* INPUTS */
+.seccion h1 {
+  margin-bottom: 20px;
+  color: #38bdf8;
+}
+
+/* ===== INPUTS ===== */
 input, textarea {
   width: 100%;
   padding: 10px;
-  margin: 5px 0 10px;
-  border-radius: 6px;
+  margin-bottom: 10px;
+  border-radius: 8px;
   border: none;
+  background: #020617;
+  color: #e5e7eb;
+  outline: none;
 }
 
+textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+/* ===== BOTONES ===== */
 button {
-  background: #38bdf8;
-  color: #020617;
-  padding: 8px 14px;
+  background: #2563eb;
   border: none;
-  border-radius: 6px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  color: white;
   cursor: pointer;
+  transition: 0.2s;
 }
 
 button:hover {
-  background: #0ea5e9;
+  background: #1d4ed8;
 }
 
+/* ===== LISTAS ===== */
 ul {
   list-style: none;
-  margin-top: 10px;
-}
-
-li {
-  background: #1e293b;
-  padding: 10px;
-  border-radius: 6px;
-  margin-bottom: 6px;
-}
-#listaTareas {
   margin-top: 15px;
 }
 
-.item-tarea {
+li {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px;
+  background: #020617;
+  padding: 12px;
   margin-bottom: 8px;
-  background: rgba(255,255,255,0.08);
   border-radius: 8px;
 }
 
-.item-tarea span {
-  color: #fff;
+/* ===== BOTON BORRAR ===== */
+li button {
+  background: #7f1d1d;
+  font-size: 14px;
 }
 
-.btn-borrar {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  font-size: 18px;
+li button:hover {
+  background: #991b1b;
 }
 
-.btn-borrar:hover {
-  transform: scale(1.2);
+/* ===== NOTAS ===== */
+#listaNotas div {
+  background: #020617;
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+}
+
+/* ===== GASTOS TOTAL ===== */
+#listaGastos li strong {
+  color: #22c55e;
 }
