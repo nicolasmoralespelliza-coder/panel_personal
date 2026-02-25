@@ -28,7 +28,7 @@ auth.onAuthStateChanged(user => {
       span.textContent = d.data().texto;
 
       const btnBorrar = document.createElement("button");
-      btnBorrar.textContent = "BorrarTarea";
+      btnBorrar.textContent = "Borrar Tarea";
       btnBorrar.className = "btn-borrar";
 
       btnBorrar.addEventListener("click", async () => {
