@@ -1,40 +1,36 @@
 import { auth, db } from "./firebase.js";
 import {
-  collection, addDoc, onSnapshot, updateDoc, doc
+  collection,
+  addDoc,
+  onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-let uid;
-auth.onAuthStateChanged(user => uid = user.uid);
+const input = document.getElementById("nuevoHabito");
+const btn = document.getElementById("btnAgregarHabito");
+const lista = document.getElementById("listaHabitos");
 
-window.agregarHabito = async () => {
-  if (!nuevoHabito.value) return;
+auth.onAuthStateChanged(user => {
+  if (!user) return;
 
-  await addDoc(collection(db, "usuarios", uid, "habitos"), {
-    nombre: nuevoHabito.value,
-    hecho: false
-  });
+  const ref = collection(db, "usuarios", user.uid, "habitos");
 
-  nuevoHabito.value = "";
-};
-
-onSnapshot(
-  () => collection(db, "usuarios", uid, "habitos"),
-  snap => {
-    listaHabitos.innerHTML = "";
-    snap.forEach(h => {
+  onSnapshot(ref, snap => {
+    lista.innerHTML = "";
+    snap.forEach(doc => {
       const li = document.createElement("li");
-      li.innerHTML = `
-        ${h.data().nombre}
-        <input type="checkbox" ${h.data().hecho ? "checked" : ""} 
-          onchange="toggleHabito('${h.id}', ${h.data().hecho})">
-      `;
-      listaHabitos.appendChild(li);
+      li.textContent = doc.data().texto;
+      lista.appendChild(li);
     });
-  }
-);
-
-window.toggleHabito = async (id, estado) => {
-  await updateDoc(doc(db, "usuarios", uid, "habitos", id), {
-    hecho: !estado
   });
-};
+
+  btn.addEventListener("click", async () => {
+    if (!input.value.trim()) return;
+
+    await addDoc(ref, {
+      texto: input.value,
+      fecha: new Date()
+    });
+
+    input.value = "";
+  });
+});
