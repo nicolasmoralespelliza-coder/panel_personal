@@ -1,38 +1,37 @@
 import { auth, db } from "./firebase.js";
 import {
-  collection, addDoc, onSnapshot, deleteDoc, doc
+  collection,
+  addDoc,
+  onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-let uid;
-auth.onAuthStateChanged(user => uid = user.uid);
+const texto = document.getElementById("nuevaNota");
+const btn = document.getElementById("btnAgregarNota");
+const lista = document.getElementById("listaNotas");
 
-window.agregarNota = async () => {
-  if (!nuevaNota.value) return;
+auth.onAuthStateChanged(user => {
+  if (!user) return;
 
-  await addDoc(collection(db, "usuarios", uid, "notas"), {
-    texto: nuevaNota.value,
-    fecha: new Date()
+  const ref = collection(db, "usuarios", user.uid, "notas");
+
+  onSnapshot(ref, snap => {
+    lista.innerHTML = "";
+    snap.forEach(doc => {
+      const div = document.createElement("div");
+      div.className = "nota";
+      div.textContent = doc.data().texto;
+      lista.appendChild(div);
+    });
   });
 
-  nuevaNota.value = "";
-};
+  btn.addEventListener("click", async () => {
+    if (!texto.value.trim()) return;
 
-onSnapshot(
-  () => collection(db, "usuarios", uid, "notas"),
-  snap => {
-    listaNotas.innerHTML = "";
-    snap.forEach(n => {
-      const div = document.createElement("div");
-      div.className = "card";
-      div.innerHTML = `
-        <p>${n.data().texto}</p>
-        <button onclick="borrarNota('${n.id}')">🗑</button>
-      `;
-      listaNotas.appendChild(div);
+    await addDoc(ref, {
+      texto: texto.value,
+      fecha: new Date()
     });
-  }
-);
 
-window.borrarNota = async (id) => {
-  await deleteDoc(doc(db, "usuarios", uid, "notas", id));
-};
+    texto.value = "";
+  });
+});
