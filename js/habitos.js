@@ -2,7 +2,9 @@ import { auth, db } from "./firebase.js";
 import {
   collection,
   addDoc,
-  onSnapshot
+  onSnapshot,
+  deleteDoc,
+  doc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const input = document.getElementById("nuevoHabito");
@@ -16,21 +18,23 @@ auth.onAuthStateChanged(user => {
 
   onSnapshot(ref, snap => {
     lista.innerHTML = "";
-    snap.forEach(doc => {
+    snap.forEach(h => {
       const li = document.createElement("li");
-      li.textContent = doc.data().texto;
+      li.textContent = h.data().texto;
+
+      const borrar = document.createElement("button");
+      borrar.textContent = "Borrar";
+      borrar.onclick = () =>
+        deleteDoc(doc(db, "usuarios", user.uid, "habitos", h.id));
+
+      li.appendChild(borrar);
       lista.appendChild(li);
     });
   });
 
   btn.addEventListener("click", async () => {
     if (!input.value.trim()) return;
-
-    await addDoc(ref, {
-      texto: input.value,
-      fecha: new Date()
-    });
-
+    await addDoc(ref, { texto: input.value });
     input.value = "";
   });
 });
