@@ -4,10 +4,6 @@
   <meta charset="UTF-8">
   <title>Panel Personal</title>
   <link rel="stylesheet" href="css/style.css">
-
-  <!-- Firebase -->
-  <script type="module" src="js/firebase.js"></script>
-  <script type="module" src="js/dashboard.js"></script>
 </head>
 <body>
 
@@ -17,69 +13,54 @@
   <aside class="sidebar">
     <h2>🧠 Mi Panel</h2>
     <nav>
-      <button onclick="mostrarSeccion('tareas')">✅ Tareas</button>
-      <button onclick="mostrarSeccion('notas')">📝 Notas</button>
-      <button onclick="mostrarSeccion('habitos')">🔁 Hábitos</button>
-      <button onclick="mostrarSeccion('gastos')">💸 Gastos</button>
+      <button data-seccion="tareas">✅ Tareas</button>
+      <button data-seccion="notas">📝 Notas</button>
+      <button data-seccion="habitos">🔁 Hábitos</button>
+      <button data-seccion="gastos">💸 Gastos</button>
       <hr>
-      <button class="logout" onclick="logout()">🚪 Salir</button>
+      <button id="btnLogout" class="logout">🚪 Salir</button>
     </nav>
   </aside>
 
   <!-- CONTENIDO -->
   <main class="contenido">
 
-    <!-- TAREAS -->
     <section id="tareas" class="seccion activa">
       <h1>✅ Tareas</h1>
       <input type="text" id="nuevaTarea" placeholder="Nueva tarea">
-      <button onclick="agregarTarea()">Agregar</button>
+      <button id="btnAgregarTarea">Agregar</button>
       <ul id="listaTareas"></ul>
     </section>
 
-    <!-- NOTAS -->
     <section id="notas" class="seccion">
       <h1>📝 Notas</h1>
-      <textarea id="nuevaNota" placeholder="Escribí una nota..."></textarea>
-      <button onclick="agregarNota()">Guardar</button>
+      <textarea id="nuevaNota"></textarea>
+      <button id="btnAgregarNota">Guardar</button>
       <div id="listaNotas"></div>
     </section>
 
-    <!-- HABITOS -->
     <section id="habitos" class="seccion">
       <h1>🔁 Hábitos</h1>
-      <input type="text" id="nuevoHabito" placeholder="Nuevo hábito">
-      <button onclick="agregarHabito()">Agregar</button>
+      <input type="text" id="nuevoHabito">
+      <button id="btnAgregarHabito">Agregar</button>
       <ul id="listaHabitos"></ul>
     </section>
 
-    <!-- GASTOS -->
     <section id="gastos" class="seccion">
       <h1>💸 Gastos</h1>
-      <input type="text" id="concepto" placeholder="Concepto">
-      <input type="number" id="monto" placeholder="Monto">
-      <button onclick="agregarGasto()">Agregar</button>
+      <input type="text" id="concepto">
+      <input type="number" id="monto">
+      <button id="btnAgregarGasto">Agregar</button>
       <ul id="listaGastos"></ul>
     </section>
 
   </main>
 </div>
-  <section class="card">
-  <h2>📋 Tareas</h2>
 
-  <input type="text" id="nuevaTarea" placeholder="Nueva tarea">
-  <button id="btnAgregar">Agregar</button>
-
-  <ul id="listaTareas"></ul>
-</section>
+<!-- SCRIPTS SIEMPRE ABAJO -->
+<script type="module" src="js/firebase.js"></script>
+<script type="module" src="js/dashboard.js"></script>
+<script type="module" src="js/tareas.js"></script>
 
 </body>
 </html>
-<script type="module" src="js/firebase.js"></script>
-<script type="module" src="js/tareas.js"></script>
-<script type="module" src="js/notas.js"></script>
-<script type="module" src="js/habitos.js"></script>
-<script type="module" src="js/gastos.js"></script>
-
-
-
