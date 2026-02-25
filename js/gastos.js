@@ -1,39 +1,49 @@
 import { auth, db } from "./firebase.js";
 import {
-  collection, addDoc, onSnapshot
+  collection,
+  addDoc,
+  onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-let uid;
-auth.onAuthStateChanged(user => uid = user.uid);
+const concepto = document.getElementById("concepto");
+const monto = document.getElementById("monto");
+const listaGastos = document.getElementById("listaGastos");
 
-window.agregarGasto = async () => {
-  if (!concepto.value || !monto.value) return;
+auth.onAuthStateChanged(user => {
+  if (!user) return;
 
-  await addDoc(collection(db, "usuarios", uid, "gastos"), {
-    concepto: concepto.value,
-    monto: Number(monto.value),
-    fecha: new Date()
-  });
+  const gastosRef = collection(db, "usuarios", user.uid, "gastos");
 
-  concepto.value = "";
-  monto.value = "";
-};
-
-onSnapshot(
-  () => collection(db, "usuarios", uid, "gastos"),
-  snap => {
+  // 🔄 LISTAR GASTOS
+  onSnapshot(gastosRef, snapshot => {
     listaGastos.innerHTML = "";
     let total = 0;
 
-    snap.forEach(g => {
-      total += g.data().monto;
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      total += data.monto;
+
       const li = document.createElement("li");
-      li.textContent = `${g.data().concepto} - $${g.data().monto}`;
+      li.textContent = `${data.concepto} - $${data.monto}`;
       listaGastos.appendChild(li);
     });
 
     const totalLi = document.createElement("li");
     totalLi.innerHTML = `<strong>Total: $${total}</strong>`;
     listaGastos.appendChild(totalLi);
-  }
-);
+  });
+
+  // ➕ AGREGAR GASTO
+  window.agregarGasto = async () => {
+    if (!concepto.value.trim() || !monto.value) return;
+
+    await addDoc(gastosRef, {
+      concepto: concepto.value.trim(),
+      monto: Number(monto.value),
+      fecha: new Date()
+    });
+
+    concepto.value = "";
+    monto.value = "";
+  };
+});
