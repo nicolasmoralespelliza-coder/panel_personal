@@ -10,6 +10,18 @@ import {
 const input = document.getElementById("nuevaNota");
 const btn = document.getElementById("btnAgregarNota");
 const lista = document.getElementById("listaNotas");
+const colores = document.querySelectorAll(".colores-postit span");
+
+let colorSeleccionado = "#fde68a"; // color default
+
+// Seleccionar color
+colores.forEach(c => {
+  c.addEventListener("click", () => {
+    colores.forEach(x => x.classList.remove("activo"));
+    c.classList.add("activo");
+    colorSeleccionado = c.dataset.color;
+  });
+});
 
 auth.onAuthStateChanged(user => {
   if (!user) return;
@@ -22,6 +34,7 @@ auth.onAuthStateChanged(user => {
     snap.forEach(n => {
       const nota = document.createElement("div");
       nota.className = "postit";
+      nota.style.background = n.data().color || "#fde68a";
 
       nota.innerHTML = `
         <p>${n.data().texto}</p>
@@ -40,6 +53,7 @@ auth.onAuthStateChanged(user => {
 
     await addDoc(notasRef, {
       texto: input.value,
+      color: colorSeleccionado,
       fecha: new Date()
     });
 
