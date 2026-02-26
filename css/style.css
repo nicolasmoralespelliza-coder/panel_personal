@@ -225,4 +225,28 @@ li button:hover {
 .postit p {
   color: #1f2937 !important; /* gris oscuro, se lee perfecto */
 }
+/* Selector colores post-it */
+.colores-postit {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.colores-postit span {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: 0.2s;
+}
+
+.colores-postit span:hover {
+  transform: scale(1.2);
+}
+
+.colores-postit span.activo {
+  border: 2px solid #fff;
+}
+
 
