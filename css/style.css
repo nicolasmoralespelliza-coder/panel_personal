@@ -157,79 +157,100 @@ li button:hover {
 }
 /* ===== POST IT NOTES ===== */
 
+/* ===== CONTENEDOR NOTAS ===== */
 #listaNotas {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 20px;
   margin-top: 20px;
 }
 
+/* ===== POST-IT ===== */
 .postit {
-  position: relative;
-  min-height: 140px;
-  padding: 15px;
-  background: #fde68a; /* amarillo post-it */
-  color: #1f2937;
+  width: 220px;
+  min-height: 180px;
+  padding: 20px;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 15px;
   border-radius: 6px;
-  box-shadow: 0 10px 15px rgba(0,0,0,0.3);
-  transform: rotate(var(--rotacion));
-  animation: aparecer 0.3s ease;
+  box-shadow: 0 15px 25px rgba(0,0,0,0.25);
+  position: relative;
+  transform: rotate(-2deg);
+  animation: aparecer 0.4s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+  word-wrap: break-word;
 }
 
-/* Rotaciones random */
-.postit:nth-child(odd) {
-  --rotacion: -2deg;
-}
-.postit:nth-child(even) {
-  --rotacion: 2deg;
-}
-.postit:nth-child(3n) {
-  --rotacion: -1deg;
+/* Efecto hover */
+.postit:hover {
+  transform: rotate(0deg) scale(1.05);
+  box-shadow: 0 20px 30px rgba(0,0,0,0.35);
 }
 
-/* Texto */
-.postit p {
-  white-space: pre-wrap;
-  font-size: 14px;
-  line-height: 1.4;
+/* Cinta adhesiva arriba */
+.postit::before {
+  content: "";
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-2deg);
+  width: 60px;
+  height: 25px;
+  background: rgba(255,255,255,0.6);
+  border-radius: 4px;
+  backdrop-filter: blur(2px);
+}
+
+/* Borde animado */
+.postit::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 8px;
+  background: linear-gradient(45deg, #ff6b6b, #feca57, #48dbfb, #1dd1a1);
+  z-index: -1;
+  background-size: 300%;
+  animation: bordeAnimado 6s linear infinite;
 }
 
 /* Botón borrar */
-.borrar-postit {
+.postit button {
   position: absolute;
-  top: 6px;
-  right: 6px;
-  background: transparent;
+  bottom: 8px;
+  right: 8px;
+  background: #111;
+  color: white;
   border: none;
-  font-size: 16px;
+  padding: 5px 8px;
+  font-size: 12px;
+  border-radius: 4px;
   cursor: pointer;
-  color: #1f2937;
 }
 
-.borrar-postit:hover {
-  color: #dc2626;
-}
-
-/* Animación */
+/* Animación aparecer */
 @keyframes aparecer {
   from {
     opacity: 0;
-    transform: scale(0.9) rotate(0deg);
+    transform: scale(0.8) rotate(-10deg);
   }
   to {
     opacity: 1;
+    transform: scale(1) rotate(-2deg);
   }
 }
-/* ===== COLOR TEXTO POST-IT ===== */
-.postit,
-.postit p {
-  color: #1f2937 !important; /* gris oscuro, se lee perfecto */
+
+/* Animación borde */
+@keyframes bordeAnimado {
+  0% { background-position: 0%; }
+  100% { background-position: 300%; }
 }
-/* Selector colores post-it */
+
+/* ===== SELECTOR DE COLORES ===== */
 .colores-postit {
   display: flex;
   gap: 10px;
-  margin-bottom: 10px;
+  margin: 10px 0;
 }
 
 .colores-postit span {
@@ -243,10 +264,7 @@ li button:hover {
 
 .colores-postit span:hover {
   transform: scale(1.2);
-}
-
-.colores-postit span.activo {
-  border: 2px solid #fff;
+  border: 2px solid #333;
 }
 
 
