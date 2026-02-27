@@ -1,3 +1,18 @@
+:root {
+  --bg: #0f172a;
+  --sidebar: #020617;
+  --card: #020617;
+  --text: #e5e7eb;
+  --primary: #2563eb;
+}
+
+[data-theme="light"] {
+  --bg: #f1f5f9;
+  --sidebar: #ffffff;
+  --card: #e2e8f0;
+  --text: #0f172a;
+  --primary: #2563eb;
+}
 /* ===== RESET ===== */
 * {
   margin: 0;
@@ -281,3 +296,4 @@ li button:hover {
   opacity: 0.5;
   transform: scale(1.05) rotate(0deg);
 }
+
