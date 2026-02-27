@@ -156,6 +156,27 @@ input::placeholder,
 textarea::placeholder {
   color: var(--text-soft);
 }
+/* ========================= */
+/* ===== INPUT DINERO ====== */
+/* ========================= */
+
+.input-dinero {
+  position: relative;
+  margin-bottom: 15px;
+}
+
+.input-dinero span {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-weight: bold;
+  color: var(--text-soft);
+}
+
+.input-dinero input {
+  padding-left: 28px;
+}
 
 /* ================= */
 /* ===== BOTONES ==== */
@@ -320,3 +341,4 @@ li button:hover {
   transform: scale(1.2);
   border: 2px solid var(--text);
 }
+
