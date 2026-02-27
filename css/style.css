@@ -22,9 +22,8 @@
 }
 
 body {
-  background: #0f172a; /* azul oscuro */
-  color: #e5e7eb;
-  height: 100vh;
+  background: var(--bg);
+  color: var(--text);
 }
 
 /* ===== APP LAYOUT ===== */
@@ -296,4 +295,5 @@ li button:hover {
   opacity: 0.5;
   transform: scale(1.05) rotate(0deg);
 }
+
 
