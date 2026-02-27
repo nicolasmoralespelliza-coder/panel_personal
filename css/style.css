@@ -272,6 +272,11 @@ li button:hover {
 .colores-postit span:nth-child(3) { background: #bfdbfe; }
 .colores-postit span:nth-child(4) { background: #fecaca; }
 .colores-postit span:nth-child(5) { background: #fbcfe8; }
+.colores-postit span.activo {
+  border: 2px solid white;
+  transform: scale(1.2);
+}
+
 
 
 
