@@ -25,6 +25,7 @@
   <!-- CONTENIDO -->
   <main class="contenido">
 
+    <!-- TAREAS -->
     <section id="tareas" class="seccion activa">
       <h1>✅ Tareas</h1>
       <input type="text" id="nuevaTarea" placeholder="Nueva tarea">
@@ -32,25 +33,26 @@
       <ul id="listaTareas"></ul>
     </section>
 
+    <!-- NOTAS -->
     <section id="notas" class="seccion">
-     <section id="notas" class="seccion">
-  <h1>📝 Notas</h1>
+      <h1>📝 Notas</h1>
 
-  <textarea id="nuevaNota" placeholder="Escribe tu nota..."></textarea>
+      <textarea id="nuevaNota" placeholder="Escribe tu nota..."></textarea>
 
-  <div class="colores-postit">
-    <span data-color="#fde68a" style="background:#fde68a"></span>
-    <span data-color="#bbf7d0" style="background:#bbf7d0"></span>
-    <span data-color="#bfdbfe" style="background:#bfdbfe"></span>
-    <span data-color="#fecaca" style="background:#fecaca"></span>
-    <span data-color="#fbcfe8" style="background:#fbcfe8"></span>
-  </div>
+      <div class="colores-postit">
+        <span data-color="#fde68a" style="background:#fde68a"></span>
+        <span data-color="#bbf7d0" style="background:#bbf7d0"></span>
+        <span data-color="#bfdbfe" style="background:#bfdbfe"></span>
+        <span data-color="#fecaca" style="background:#fecaca"></span>
+        <span data-color="#fbcfe8" style="background:#fbcfe8"></span>
+      </div>
 
-  <button id="btnAgregarNota">Guardar</button>
+      <button id="btnAgregarNota">Guardar</button>
 
-  <div id="listaNotas"></div>
-</section>
+      <div id="listaNotas"></div>
+    </section>
 
+    <!-- HABITOS -->
     <section id="habitos" class="seccion">
       <h1>🔁 Hábitos</h1>
       <input type="text" id="nuevoHabito">
@@ -58,6 +60,7 @@
       <ul id="listaHabitos"></ul>
     </section>
 
+    <!-- GASTOS -->
     <section id="gastos" class="seccion">
       <h1>💸 Gastos</h1>
       <input type="text" id="concepto">
@@ -72,7 +75,6 @@
 <!-- SCRIPTS SIEMPRE ABAJO -->
 <script type="module" src="js/firebase.js"></script>
 <script type="module" src="js/dashboard.js"></script>
-
 <script type="module" src="js/tareas.js"></script>
 <script type="module" src="js/notas.js"></script>
 <script type="module" src="js/habitos.js"></script>
@@ -80,6 +82,3 @@
 
 </body>
 </html>
-
-
-
