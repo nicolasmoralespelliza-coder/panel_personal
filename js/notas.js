@@ -1,40 +1,87 @@
-const btnAgregarNota = document.getElementById("btnAgregarNota");
-const nuevaNota = document.getElementById("nuevaNota");
-const listaNotas = document.getElementById("listaNotas");
+document.addEventListener("DOMContentLoaded", () => {
 
-let colorSeleccionado = "#fde68a";
+  const btnAgregarNota = document.getElementById("btnAgregarNota");
+  const nuevaNota = document.getElementById("nuevaNota");
+  const listaNotas = document.getElementById("listaNotas");
 
-// Selección de color
-document.querySelectorAll(".colores-postit span").forEach(color => {
-  color.addEventListener("click", () => {
+  let colorSeleccionado = "#fde68a";
 
-    document.querySelectorAll(".colores-postit span")
-      .forEach(c => c.classList.remove("activo"));
+  // Selector de colores
+  document.querySelectorAll(".colores-postit span").forEach(color => {
+    color.addEventListener("click", () => {
 
-    color.classList.add("activo");
+      document.querySelectorAll(".colores-postit span")
+        .forEach(c => c.classList.remove("activo"));
 
-    colorSeleccionado = color.dataset.color;
-  });
-});
+      color.classList.add("activo");
 
-// Agregar nota
-btnAgregarNota.addEventListener("click", () => {
-
-  if (nuevaNota.value.trim() === "") return;
-
-  const div = document.createElement("div");
-  div.classList.add("postit");
-  div.style.background = colorSeleccionado;
-  div.innerHTML = `
-    ${nuevaNota.value}
-    <button>Borrar</button>
-  `;
-
-  // Botón borrar
-  div.querySelector("button").addEventListener("click", () => {
-    div.remove();
+      colorSeleccionado = color.dataset.color;
+    });
   });
 
-  listaNotas.appendChild(div);
-  nuevaNota.value = "";
+  // Agregar nota
+  btnAgregarNota.addEventListener("click", () => {
+
+    if (nuevaNota.value.trim() === "") return;
+
+    const div = document.createElement("div");
+    div.classList.add("postit");
+    div.setAttribute("draggable", "true");
+    div.style.background = colorSeleccionado;
+    div.textContent = nuevaNota.value;
+
+    const btnBorrar = document.createElement("button");
+    btnBorrar.textContent = "Borrar";
+
+    btnBorrar.addEventListener("click", () => {
+      div.remove();
+    });
+
+    div.appendChild(btnBorrar);
+
+    agregarEventosDrag(div);
+
+    listaNotas.appendChild(div);
+    nuevaNota.value = "";
+  });
+
+  // Función drag
+  function agregarEventosDrag(elemento) {
+
+    elemento.addEventListener("dragstart", () => {
+      elemento.classList.add("dragging");
+    });
+
+    elemento.addEventListener("dragend", () => {
+      elemento.classList.remove("dragging");
+    });
+  }
+
+  listaNotas.addEventListener("dragover", e => {
+    e.preventDefault();
+    const dragging = document.querySelector(".dragging");
+    const afterElement = getDragAfterElement(listaNotas, e.clientY);
+
+    if (afterElement == null) {
+      listaNotas.appendChild(dragging);
+    } else {
+      listaNotas.insertBefore(dragging, afterElement);
+    }
+  });
+
+  function getDragAfterElement(container, y) {
+    const draggableElements = [...container.querySelectorAll(".postit:not(.dragging)")];
+
+    return draggableElements.reduce((closest, child) => {
+      const box = child.getBoundingClientRect();
+      const offset = y - box.top - box.height / 2;
+
+      if (offset < 0 && offset > closest.offset) {
+        return { offset: offset, element: child };
+      } else {
+        return closest;
+      }
+    }, { offset: Number.NEGATIVE_INFINITY }).element;
+  }
+
 });
