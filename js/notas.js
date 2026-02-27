@@ -7,6 +7,12 @@ let colorSeleccionado = "#fde68a";
 // Selección de color
 document.querySelectorAll(".colores-postit span").forEach(color => {
   color.addEventListener("click", () => {
+
+    document.querySelectorAll(".colores-postit span")
+      .forEach(c => c.classList.remove("activo"));
+
+    color.classList.add("activo");
+
     colorSeleccionado = color.dataset.color;
   });
 });
