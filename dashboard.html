@@ -59,14 +59,22 @@
     </section>
 
     <!-- GASTOS -->
-    <section id="gastos" class="seccion">
-      <h1>💸 Gastos</h1>
-      <input type="text" id="concepto">
-      <input type="number" id="monto">
-      <button id="btnAgregarGasto">Agregar</button>
-      <ul id="listaGastos"></ul>
-    </section>
+   <div id="gastos" class="seccion">
+  <h1>💰 Gastos</h1>
 
+  <label>Motivo</label>
+  <input type="text" id="gastoMotivo" placeholder="Ej: Supermercado" />
+
+  <label>Monto</label>
+  <div class="input-dinero">
+    <span>$</span>
+    <input type="number" id="gastoMonto" placeholder="0.00" />
+  </div>
+
+  <button onclick="agregarGasto()">Agregar gasto</button>
+
+  <ul id="listaGastos"></ul>
+</div>
   </main>
 </div>
 
@@ -81,6 +89,7 @@
 
 </body>
 </html>
+
 
 
 
