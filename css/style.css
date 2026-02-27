@@ -163,19 +163,21 @@ textarea::placeholder {
 .input-dinero {
   position: relative;
   margin-bottom: 15px;
+  display: flex;
+  align-items: center;
 }
 
 .input-dinero span {
   position: absolute;
   left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-weight: bold;
+  font-weight: 600;
+  font-size: 14px;
   color: var(--text-soft);
+  pointer-events: none;
 }
 
 .input-dinero input {
-  padding-left: 28px;
+  padding-left: 30px;
 }
 
 /* ================= */
@@ -341,4 +343,5 @@ li button:hover {
   transform: scale(1.2);
   border: 2px solid var(--text);
 }
+
 
