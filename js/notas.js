@@ -1,87 +1,149 @@
-document.addEventListener("DOMContentLoaded", () => {
+import { auth, db } from "./firebase.js";
+import {
+  collection,
+  addDoc,
+  onSnapshot,
+  deleteDoc,
+  doc,
+  updateDoc
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-  const btnAgregarNota = document.getElementById("btnAgregarNota");
-  const nuevaNota = document.getElementById("nuevaNota");
-  const listaNotas = document.getElementById("listaNotas");
+const btnAgregarNota = document.getElementById("btnAgregarNota");
+const nuevaNota = document.getElementById("nuevaNota");
+const listaNotas = document.getElementById("listaNotas");
 
-  let colorSeleccionado = "#fde68a";
+let colorSeleccionado = "#fde68a";
 
-  // Selector de colores
-  document.querySelectorAll(".colores-postit span").forEach(color => {
-    color.addEventListener("click", () => {
+/* ========================= */
+/* ===== SELECTOR COLOR ==== */
+/* ========================= */
 
-      document.querySelectorAll(".colores-postit span")
-        .forEach(c => c.classList.remove("activo"));
+document.querySelectorAll(".colores-postit span").forEach(color => {
+  color.addEventListener("click", () => {
 
-      color.classList.add("activo");
+    document.querySelectorAll(".colores-postit span")
+      .forEach(c => c.classList.remove("activo"));
 
-      colorSeleccionado = color.dataset.color;
+    color.classList.add("activo");
+    colorSeleccionado = color.dataset.color;
+  });
+});
+
+/* ========================= */
+/* ===== AUTH USER ========= */
+/* ========================= */
+
+auth.onAuthStateChanged(user => {
+
+  if (!user) return;
+
+  const notasRef = collection(db, "usuarios", user.uid, "notas");
+
+  /* ========================= */
+  /* ===== ESCUCHAR NOTAS ==== */
+  /* ========================= */
+
+  onSnapshot(notasRef, snap => {
+
+    listaNotas.innerHTML = "";
+
+    snap.forEach(d => {
+      const data = d.data();
+
+      crearNotaElemento(
+        d.id,
+        data.texto,
+        data.color,
+        data.x || 50,
+        data.y || 50,
+        user.uid
+      );
     });
+
   });
 
-  // Agregar nota
-  btnAgregarNota.addEventListener("click", () => {
+  /* ========================= */
+  /* ===== AGREGAR NOTA ====== */
+  /* ========================= */
 
-    if (nuevaNota.value.trim() === "") return;
+  btnAgregarNota.addEventListener("click", async () => {
 
-    const div = document.createElement("div");
-    div.classList.add("postit");
-    div.setAttribute("draggable", "true");
-    div.style.background = colorSeleccionado;
-    div.textContent = nuevaNota.value;
+    if (!nuevaNota.value.trim()) return;
 
-    const btnBorrar = document.createElement("button");
-    btnBorrar.textContent = "Borrar";
-
-    btnBorrar.addEventListener("click", () => {
-      div.remove();
+    await addDoc(notasRef, {
+      texto: nuevaNota.value,
+      color: colorSeleccionado,
+      x: 100,
+      y: 100,
+      fecha: new Date()
     });
 
-    div.appendChild(btnBorrar);
-
-    agregarEventosDrag(div);
-
-    listaNotas.appendChild(div);
     nuevaNota.value = "";
   });
 
-  // Función drag
-  function agregarEventosDrag(elemento) {
+});
 
-    elemento.addEventListener("dragstart", () => {
-      elemento.classList.add("dragging");
-    });
 
-    elemento.addEventListener("dragend", () => {
-      elemento.classList.remove("dragging");
-    });
-  }
+/* ========================= */
+/* ===== CREAR ELEMENTO ==== */
+/* ========================= */
 
-  listaNotas.addEventListener("dragover", e => {
-    e.preventDefault();
-    const dragging = document.querySelector(".dragging");
-    const afterElement = getDragAfterElement(listaNotas, e.clientY);
+function crearNotaElemento(id, texto, color, x, y, uid) {
 
-    if (afterElement == null) {
-      listaNotas.appendChild(dragging);
-    } else {
-      listaNotas.insertBefore(dragging, afterElement);
-    }
+  const div = document.createElement("div");
+  div.classList.add("postit");
+  div.style.background = color;
+  div.style.left = x + "px";
+  div.style.top = y + "px";
+  div.style.position = "absolute";
+  div.textContent = texto;
+
+  /* ===== BOTON BORRAR ===== */
+
+  const btnBorrar = document.createElement("button");
+  btnBorrar.textContent = "X";
+  btnBorrar.style.marginTop = "10px";
+
+  btnBorrar.addEventListener("click", async () => {
+    await deleteDoc(doc(db, "usuarios", uid, "notas", id));
   });
 
-  function getDragAfterElement(container, y) {
-    const draggableElements = [...container.querySelectorAll(".postit:not(.dragging)")];
+  div.appendChild(btnBorrar);
 
-    return draggableElements.reduce((closest, child) => {
-      const box = child.getBoundingClientRect();
-      const offset = y - box.top - box.height / 2;
+  /* ===== DRAG REAL ===== */
 
-      if (offset < 0 && offset > closest.offset) {
-        return { offset: offset, element: child };
-      } else {
-        return closest;
+  let offsetX = 0;
+  let offsetY = 0;
+  let isDragging = false;
+
+  div.addEventListener("mousedown", (e) => {
+    isDragging = true;
+    offsetX = e.clientX - div.offsetLeft;
+    offsetY = e.clientY - div.offsetTop;
+    div.style.cursor = "grabbing";
+  });
+
+  document.addEventListener("mousemove", (e) => {
+    if (!isDragging) return;
+
+    div.style.left = (e.clientX - offsetX) + "px";
+    div.style.top = (e.clientY - offsetY) + "px";
+  });
+
+  document.addEventListener("mouseup", async () => {
+    if (!isDragging) return;
+
+    isDragging = false;
+    div.style.cursor = "grab";
+
+    await updateDoc(
+      doc(db, "usuarios", uid, "notas", id),
+      {
+        x: parseInt(div.style.left),
+        y: parseInt(div.style.top)
       }
-    }, { offset: Number.NEGATIVE_INFINITY }).element;
-  }
+    );
+  });
 
-});
+  listaNotas.appendChild(div);
+}
