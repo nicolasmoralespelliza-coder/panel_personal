@@ -7,13 +7,18 @@ import {
   doc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-const concepto = document.getElementById("concepto");
-const monto = document.getElementById("monto");
-const btn = document.getElementById("btnAgregarGasto");
-const lista = document.getElementById("listaGastos");
-
 auth.onAuthStateChanged(user => {
   if (!user) return;
+
+  const concepto = document.getElementById("gastoMotivo");
+  const monto = document.getElementById("gastoMonto");
+  const btn = document.getElementById("btnAgregarGasto");
+  const lista = document.getElementById("listaGastos");
+
+  if (!concepto || !monto || !btn || !lista) {
+    console.error("Algún elemento de gastos no existe en el HTML");
+    return;
+  }
 
   const ref = collection(db, "usuarios", user.uid, "gastos");
 
@@ -22,10 +27,14 @@ auth.onAuthStateChanged(user => {
     let total = 0;
 
     snap.forEach(g => {
-      total += g.data().monto;
+      const data = g.data();
+      total += data.monto;
 
       const li = document.createElement("li");
-      li.textContent = `${g.data().concepto} - $${g.data().monto}`;
+      li.innerHTML = `
+        ${data.concepto}
+        <strong>$${data.monto}</strong>
+      `;
 
       const borrar = document.createElement("button");
       borrar.textContent = "Borrar";
