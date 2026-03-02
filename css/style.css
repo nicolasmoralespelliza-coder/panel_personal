@@ -371,5 +371,15 @@ li {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
+.grafico-container {
+  max-width: 350px;   /* tamaño del gráfico */
+  margin: 30px auto;  /* centrado */
+}
+
+#graficoGastos {
+  width: 100% !important;
+  height: 350px !important;
+}
+
 
 
