@@ -4,7 +4,9 @@ import {
   addDoc,
   onSnapshot,
   deleteDoc,
-  doc
+  doc,
+  query,
+  orderBy
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -12,30 +14,52 @@ document.addEventListener("DOMContentLoaded", () => {
   auth.onAuthStateChanged(user => {
     if (!user) return;
 
-    const concepto = document.getElementById("gastoMotivo");
-    const monto = document.getElementById("gastoMonto");
+    const conceptoInput = document.getElementById("gastoMotivo");
+    const montoInput = document.getElementById("gastoMonto");
     const btn = document.getElementById("btnAgregarGasto");
     const lista = document.getElementById("listaGastos");
+    const totalElemento = document.getElementById("totalGastos");
+    const filtroMes = document.getElementById("filtroMes");
+    const canvas = document.getElementById("graficoGastos");
 
-    if (!concepto || !monto || !btn || !lista) {
-      console.error("Elementos de gastos no encontrados en el HTML");
+    if (!conceptoInput || !montoInput || !btn || !lista) {
+      console.error("Elementos de gastos no encontrados");
       return;
     }
 
-    const ref = collection(db, "usuarios", user.uid, "gastos");
+    const ref = query(
+      collection(db, "usuarios", user.uid, "gastos"),
+      orderBy("fecha", "desc")
+    );
+
+    let grafico;
 
     onSnapshot(ref, snap => {
       lista.innerHTML = "";
       let total = 0;
+      let categorias = {};
+
+      const mesSeleccionado = filtroMes?.value;
 
       snap.forEach(g => {
         const data = g.data();
+        const fecha = data.fecha?.toDate();
+        const mesDoc = fecha ? fecha.toISOString().slice(0, 7) : null;
+
+        if (mesSeleccionado && mesDoc !== mesSeleccionado) return;
+
         total += data.monto;
+
+        // Agrupar por concepto
+        if (!categorias[data.concepto]) {
+          categorias[data.concepto] = 0;
+        }
+        categorias[data.concepto] += data.monto;
 
         const li = document.createElement("li");
         li.innerHTML = `
           ${data.concepto}
-          <strong>$${data.monto}</strong>
+          <strong>$${data.monto.toLocaleString()}</strong>
         `;
 
         const borrar = document.createElement("button");
@@ -47,23 +71,58 @@ document.addEventListener("DOMContentLoaded", () => {
         lista.appendChild(li);
       });
 
-      const liTotal = document.createElement("li");
-      liTotal.innerHTML = `<strong>Total: $${total}</strong>`;
-      lista.appendChild(liTotal);
+      totalElemento.textContent = "$" + total.toLocaleString();
+
+      actualizarGrafico(categorias);
     });
 
     btn.addEventListener("click", async () => {
-      if (!concepto.value || !monto.value) return;
+      if (!conceptoInput.value || !montoInput.value) return;
 
-      await addDoc(ref, {
-        concepto: concepto.value,
-        monto: Number(monto.value),
+      await addDoc(collection(db, "usuarios", user.uid, "gastos"), {
+        concepto: conceptoInput.value,
+        monto: Number(montoInput.value),
         fecha: new Date()
       });
 
-      concepto.value = "";
-      monto.value = "";
+      conceptoInput.value = "";
+      montoInput.value = "";
     });
+
+    filtroMes?.addEventListener("change", () => {
+      // Forzar actualización llamando nuevamente snapshot (ya se actualiza solo)
+    });
+
+    function actualizarGrafico(categorias) {
+      if (!canvas) return;
+
+      const labels = Object.keys(categorias);
+      const valores = Object.values(categorias);
+
+      if (grafico) {
+        grafico.destroy();
+      }
+
+      grafico = new Chart(canvas, {
+        type: "doughnut",
+        data: {
+          labels: labels,
+          datasets: [{
+            data: valores
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              labels: {
+                color: getComputedStyle(document.body).getPropertyValue('--text')
+              }
+            }
+          }
+        }
+      });
+    }
 
   });
 
