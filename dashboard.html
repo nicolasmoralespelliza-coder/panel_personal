@@ -74,15 +74,18 @@
   <button id="btnAgregarGasto" type="button">Agregar</button>
   <div class="card-total">
   <h3>Total gastado</h3>
+    <input type="month" id="filtroMes">
   <p id="totalGastos">$0</p>
         </div>
 
   <ul id="listaGastos"></ul>
+     <canvas id="graficoGastos"></canvas>
 </div>
   </main>
 </div>
 
 <!-- SCRIPTS SIEMPRE ABAJO -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script type="module" src="js/firebase.js"></script>
 <script type="module" src="js/dashboard.js"></script>
 <script type="module" src="js/tareas.js"></script>
@@ -93,6 +96,7 @@
 
 </body>
 </html>
+
 
 
 
