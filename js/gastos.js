@@ -7,59 +7,64 @@ import {
   doc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-auth.onAuthStateChanged(user => {
-  if (!user) return;
+document.addEventListener("DOMContentLoaded", () => {
 
-  const concepto = document.getElementById("gastoMotivo");
-  const monto = document.getElementById("gastoMonto");
-  const btn = document.getElementById("btnAgregarGasto");
-  const lista = document.getElementById("listaGastos");
+  auth.onAuthStateChanged(user => {
+    if (!user) return;
 
-  if (!concepto || !monto || !btn || !lista) {
-    console.error("Algún elemento de gastos no existe en el HTML");
-    return;
-  }
+    const concepto = document.getElementById("gastoMotivo");
+    const monto = document.getElementById("gastoMonto");
+    const btn = document.getElementById("btnAgregarGasto");
+    const lista = document.getElementById("listaGastos");
 
-  const ref = collection(db, "usuarios", user.uid, "gastos");
+    if (!concepto || !monto || !btn || !lista) {
+      console.error("Elementos de gastos no encontrados en el HTML");
+      return;
+    }
 
-  onSnapshot(ref, snap => {
-    lista.innerHTML = "";
-    let total = 0;
+    const ref = collection(db, "usuarios", user.uid, "gastos");
 
-    snap.forEach(g => {
-      const data = g.data();
-      total += data.monto;
+    onSnapshot(ref, snap => {
+      lista.innerHTML = "";
+      let total = 0;
 
-      const li = document.createElement("li");
-      li.innerHTML = `
-        ${data.concepto}
-        <strong>$${data.monto}</strong>
-      `;
+      snap.forEach(g => {
+        const data = g.data();
+        total += data.monto;
 
-      const borrar = document.createElement("button");
-      borrar.textContent = "Borrar";
-      borrar.onclick = () =>
-        deleteDoc(doc(db, "usuarios", user.uid, "gastos", g.id));
+        const li = document.createElement("li");
+        li.innerHTML = `
+          ${data.concepto}
+          <strong>$${data.monto}</strong>
+        `;
 
-      li.appendChild(borrar);
-      lista.appendChild(li);
+        const borrar = document.createElement("button");
+        borrar.textContent = "Borrar";
+        borrar.onclick = () =>
+          deleteDoc(doc(db, "usuarios", user.uid, "gastos", g.id));
+
+        li.appendChild(borrar);
+        lista.appendChild(li);
+      });
+
+      const liTotal = document.createElement("li");
+      liTotal.innerHTML = `<strong>Total: $${total}</strong>`;
+      lista.appendChild(liTotal);
     });
 
-    const liTotal = document.createElement("li");
-    liTotal.innerHTML = `<strong>Total: $${total}</strong>`;
-    lista.appendChild(liTotal);
-  });
+    btn.addEventListener("click", async () => {
+      if (!concepto.value || !monto.value) return;
 
-  btn.addEventListener("click", async () => {
-    if (!concepto.value || !monto.value) return;
+      await addDoc(ref, {
+        concepto: concepto.value,
+        monto: Number(monto.value),
+        fecha: new Date()
+      });
 
-    await addDoc(ref, {
-      concepto: concepto.value,
-      monto: Number(monto.value),
-      fecha: new Date()
+      concepto.value = "";
+      monto.value = "";
     });
 
-    concepto.value = "";
-    monto.value = "";
   });
+
 });
