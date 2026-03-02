@@ -343,6 +343,26 @@ li button:hover {
   transform: scale(1.2);
   border: 2px solid var(--text);
 }
+.card-total {
+  background: var(--card);
+  padding: 20px;
+  border-radius: 12px;
+  margin: 20px 0;
+  box-shadow: 0 10px 25px var(--shadow);
+  text-align: center;
+}
+
+.card-total h3 {
+  font-size: 14px;
+  color: var(--text-soft);
+  margin-bottom: 5px;
+}
+
+.card-total p {
+  font-size: 28px;
+  font-weight: bold;
+  color: #22c55e;
+}
 
 
 
