@@ -16,18 +16,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const conceptoInput = document.getElementById("gastoMotivo");
     const montoInput = document.getElementById("gastoMonto");
+    const tipoInput = document.getElementById("gastoTipo");
     const btn = document.getElementById("btnAgregarGasto");
     const lista = document.getElementById("listaGastos");
-    const totalElemento = document.getElementById("totalGastos");
     const filtroMes = document.getElementById("filtroMes");
     const canvas = document.getElementById("graficoGastos");
 
-    if (!conceptoInput || !montoInput || !btn || !lista) {
-      console.error("Elementos de gastos no encontrados");
-      return;
-    }
+    const totalIngresosEl = document.getElementById("totalIngresos");
+    const totalEgresosEl = document.getElementById("totalEgresos");
+    const balanceFinalEl = document.getElementById("balanceFinal");
 
-    // 🔥 Seleccionar automáticamente el mes actual
     const hoy = new Date();
     const mesActual = hoy.toISOString().slice(0, 7);
     if (filtroMes) filtroMes.value = mesActual;
@@ -40,7 +38,6 @@ document.addEventListener("DOMContentLoaded", () => {
     let grafico;
     let gastosData = [];
 
-    // 🔥 Escuchar cambios en Firestore
     onSnapshot(ref, snap => {
 
       gastosData = [];
@@ -52,10 +49,9 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       });
 
-      renderizarGastos();
+      renderizar();
     });
 
-    // 🔥 Agregar gasto
     btn.addEventListener("click", async () => {
 
       if (!conceptoInput.value || !montoInput.value) return;
@@ -63,6 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
       await addDoc(collection(db, "usuarios", user.uid, "gastos"), {
         concepto: conceptoInput.value,
         monto: Number(montoInput.value),
+        tipo: tipoInput.value,
         fecha: new Date()
       });
 
@@ -70,16 +67,15 @@ document.addEventListener("DOMContentLoaded", () => {
       montoInput.value = "";
     });
 
-    // 🔥 Filtrar por mes
-    filtroMes?.addEventListener("change", () => {
-      renderizarGastos();
-    });
+    filtroMes?.addEventListener("change", renderizar);
 
-    // 🔥 Render principal
-    function renderizarGastos() {
+    function renderizar() {
 
       lista.innerHTML = "";
-      let total = 0;
+
+      let ingresos = 0;
+      let egresos = 0;
+
       let categorias = {};
 
       const mesSeleccionado = filtroMes?.value;
@@ -91,7 +87,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (mesSeleccionado && mesDoc !== mesSeleccionado) return;
 
-        total += g.monto;
+        if (g.tipo === "ingreso") {
+          ingresos += g.monto;
+        } else {
+          egresos += g.monto;
+        }
 
         if (!categorias[g.concepto]) {
           categorias[g.concepto] = 0;
@@ -100,9 +100,12 @@ document.addEventListener("DOMContentLoaded", () => {
         categorias[g.concepto] += g.monto;
 
         const li = document.createElement("li");
+
         li.innerHTML = `
           ${g.concepto}
-          <strong>$${g.monto.toLocaleString()}</strong>
+          <strong style="color:${g.tipo === "ingreso" ? "limegreen" : "red"}">
+            ${g.tipo === "ingreso" ? "+" : "-"}$${g.monto.toLocaleString()}
+          </strong>
         `;
 
         const borrar = document.createElement("button");
@@ -114,40 +117,32 @@ document.addEventListener("DOMContentLoaded", () => {
         lista.appendChild(li);
       });
 
-      totalElemento.textContent = "$" + total.toLocaleString();
-      actualizarGrafico(categorias);
+      const balance = ingresos - egresos;
+
+      totalIngresosEl.textContent = "$" + ingresos.toLocaleString();
+      totalEgresosEl.textContent = "$" + egresos.toLocaleString();
+      balanceFinalEl.textContent = "$" + balance.toLocaleString();
+
+      actualizarGrafico(ingresos, egresos);
     }
 
-    // 🔥 Actualizar gráfico
-    function actualizarGrafico(categorias) {
+    function actualizarGrafico(ingresos, egresos) {
 
       if (!canvas) return;
 
-      const labels = Object.keys(categorias);
-      const valores = Object.values(categorias);
-
-      if (grafico) {
-        grafico.destroy();
-      }
+      if (grafico) grafico.destroy();
 
       grafico = new Chart(canvas, {
         type: "doughnut",
         data: {
-          labels: labels,
+          labels: ["Ingresos", "Egresos"],
           datasets: [{
-            data: valores
+            data: [ingresos, egresos],
+            backgroundColor: ["#16a34a", "#dc2626"]
           }]
         },
         options: {
-          responsive: true,
-          plugins: {
-            legend: {
-              labels: {
-                color: getComputedStyle(document.body)
-                  .getPropertyValue('--text')
-              }
-            }
-          }
+          responsive: true
         }
       });
     }
