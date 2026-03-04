@@ -66,17 +66,26 @@
   <input type="text" id="gastoMotivo" placeholder="Tipo de gasto" />
 
   <label>Monto</label>
+     
   <div class="input-dinero">
     <span>$</span>
     <input type="number" id="gastoMonto" placeholder="0.00" />
+    <label>Tipo</label>
+<select id="gastoTipo">
+  <option value="egreso">Egreso</option>
+  <option value="ingreso">Ingreso</option>
+</select>
   </div>
-
+  
   <button id="btnAgregarGasto" type="button">Agregar</button>
   <div class="card-total">
-  <h3>Total gastado</h3>
-    <input type="month" id="filtroMes">
-  <p id="totalGastos">$0</p>
-        </div>
+  <input type="month" id="filtroMes">
+
+  <p>Ingresos: <strong id="totalIngresos">$0</strong></p>
+  <p>Egresos: <strong id="totalEgresos">$0</strong></p>
+  <hr>
+  <p>Balance: <strong id="balanceFinal">$0</strong></p>
+</div>
 
   <ul id="listaGastos"></ul>
     <div class="grafico-container">
@@ -98,6 +107,7 @@
 
 </body>
 </html>
+
 
 
 
