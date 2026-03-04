@@ -27,56 +27,37 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    // 🔥 Seleccionar automáticamente el mes actual
+    const hoy = new Date();
+    const mesActual = hoy.toISOString().slice(0, 7);
+    if (filtroMes) filtroMes.value = mesActual;
+
     const ref = query(
       collection(db, "usuarios", user.uid, "gastos"),
       orderBy("fecha", "desc")
     );
 
     let grafico;
+    let gastosData = [];
 
+    // 🔥 Escuchar cambios en Firestore
     onSnapshot(ref, snap => {
-      lista.innerHTML = "";
-      let total = 0;
-      let categorias = {};
 
-      const mesSeleccionado = filtroMes?.value;
+      gastosData = [];
 
       snap.forEach(g => {
-        const data = g.data();
-        const fecha = data.fecha?.toDate();
-        const mesDoc = fecha ? fecha.toISOString().slice(0, 7) : null;
-
-        if (mesSeleccionado && mesDoc !== mesSeleccionado) return;
-
-        total += data.monto;
-
-        // Agrupar por concepto
-        if (!categorias[data.concepto]) {
-          categorias[data.concepto] = 0;
-        }
-        categorias[data.concepto] += data.monto;
-
-        const li = document.createElement("li");
-        li.innerHTML = `
-          ${data.concepto}
-          <strong>$${data.monto.toLocaleString()}</strong>
-        `;
-
-        const borrar = document.createElement("button");
-        borrar.textContent = "Borrar";
-        borrar.onclick = () =>
-          deleteDoc(doc(db, "usuarios", user.uid, "gastos", g.id));
-
-        li.appendChild(borrar);
-        lista.appendChild(li);
+        gastosData.push({
+          id: g.id,
+          ...g.data()
+        });
       });
 
-      totalElemento.textContent = "$" + total.toLocaleString();
-
-      actualizarGrafico(categorias);
+      renderizarGastos();
     });
 
+    // 🔥 Agregar gasto
     btn.addEventListener("click", async () => {
+
       if (!conceptoInput.value || !montoInput.value) return;
 
       await addDoc(collection(db, "usuarios", user.uid, "gastos"), {
@@ -89,11 +70,57 @@ document.addEventListener("DOMContentLoaded", () => {
       montoInput.value = "";
     });
 
+    // 🔥 Filtrar por mes
     filtroMes?.addEventListener("change", () => {
-      // Forzar actualización llamando nuevamente snapshot (ya se actualiza solo)
+      renderizarGastos();
     });
 
+    // 🔥 Render principal
+    function renderizarGastos() {
+
+      lista.innerHTML = "";
+      let total = 0;
+      let categorias = {};
+
+      const mesSeleccionado = filtroMes?.value;
+
+      gastosData.forEach(g => {
+
+        const fecha = g.fecha?.toDate();
+        const mesDoc = fecha ? fecha.toISOString().slice(0, 7) : null;
+
+        if (mesSeleccionado && mesDoc !== mesSeleccionado) return;
+
+        total += g.monto;
+
+        if (!categorias[g.concepto]) {
+          categorias[g.concepto] = 0;
+        }
+
+        categorias[g.concepto] += g.monto;
+
+        const li = document.createElement("li");
+        li.innerHTML = `
+          ${g.concepto}
+          <strong>$${g.monto.toLocaleString()}</strong>
+        `;
+
+        const borrar = document.createElement("button");
+        borrar.textContent = "Borrar";
+        borrar.onclick = () =>
+          deleteDoc(doc(db, "usuarios", user.uid, "gastos", g.id));
+
+        li.appendChild(borrar);
+        lista.appendChild(li);
+      });
+
+      totalElemento.textContent = "$" + total.toLocaleString();
+      actualizarGrafico(categorias);
+    }
+
+    // 🔥 Actualizar gráfico
     function actualizarGrafico(categorias) {
+
       if (!canvas) return;
 
       const labels = Object.keys(categorias);
@@ -116,7 +143,8 @@ document.addEventListener("DOMContentLoaded", () => {
           plugins: {
             legend: {
               labels: {
-                color: getComputedStyle(document.body).getPropertyValue('--text')
+                color: getComputedStyle(document.body)
+                  .getPropertyValue('--text')
               }
             }
           }
