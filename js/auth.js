@@ -40,7 +40,7 @@ window.login = function(){
 
   .then(()=>{
     ocultarLoader();
-    mostrarMensaje("✅ Login correcto");
+    mostrarMensaje("✅ Login correcto",true);
 
     setTimeout(()=>{
       window.location.href="dashboard.html";
@@ -89,3 +89,4 @@ window.verPassword=function(){
   }
 
 }
+
