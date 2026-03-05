@@ -45,6 +45,7 @@ window.login = function(){
     setTimeout(()=>{
       window.location.href="dashboard.html";
     },1500);
+
   })
 
   .catch(err=>{
