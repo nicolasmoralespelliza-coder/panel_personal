@@ -48,8 +48,11 @@ signInWithEmailAndPassword(auth,email,password)
 
 .then(()=>{
 ocultarLoader();
-mostrarMensaje("✅ Login correcto",true);
-})
+mostrarMensaje("✅ Login correcto");
+
+setTimeout(()=>{
+  window.location.href="dashboard.html";
+},1500);
 
 .catch(err=>{
 ocultarLoader();
@@ -92,3 +95,4 @@ pass.type="password";
 }
 
 }
+
