@@ -12,20 +12,28 @@ function ocultarLoader(){
   loader.style.display="none";
 }
 
-function mostrarMensaje(texto){
+function mostrarMensaje(texto, redirigir=false){
 
-  const modal = document.getElementById("modalMensaje");
-  const textoMensaje = document.getElementById("textoMensaje");
+const modal = document.getElementById("modalMensaje");
+const textoMensaje = document.getElementById("textoMensaje");
 
-  textoMensaje.textContent = texto;
-  modal.classList.add("show");
+textoMensaje.textContent = texto;
+modal.classList.add("show");
+
+window.redirigirDashboard = redirigir;
+
+}
 
 }
 
 window.cerrarMensaje = function(){
 
-  const modal = document.getElementById("modalMensaje");
-  modal.classList.remove("show");
+const modal = document.getElementById("modalMensaje");
+modal.classList.remove("show");
+
+if(window.redirigirDashboard){
+window.location.href="dashboard.html";
+}
 
 }
 
@@ -87,5 +95,6 @@ window.verPassword=function(){
   }
 
 }
+
 
 
