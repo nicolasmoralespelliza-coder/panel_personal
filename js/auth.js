@@ -14,26 +14,23 @@ function ocultarLoader(){
 
 function mostrarMensaje(texto, redirigir=false){
 
-const modal = document.getElementById("modalMensaje");
-const textoMensaje = document.getElementById("textoMensaje");
+  const modal = document.getElementById("modalMensaje");
+  const textoMensaje = document.getElementById("textoMensaje");
 
-textoMensaje.textContent = texto;
-modal.classList.add("show");
+  textoMensaje.textContent = texto;
+  modal.classList.add("show");
 
-window.redirigirDashboard = redirigir;
-
-}
-
+  window.redirigirDashboard = redirigir;
 }
 
 window.cerrarMensaje = function(){
 
-const modal = document.getElementById("modalMensaje");
-modal.classList.remove("show");
+  const modal = document.getElementById("modalMensaje");
+  modal.classList.remove("show");
 
-if(window.redirigirDashboard){
-window.location.href="dashboard.html";
-}
+  if(window.redirigirDashboard){
+    window.location.href="dashboard.html";
+  }
 
 }
 
@@ -48,10 +45,7 @@ window.login = function(){
 
   .then(()=>{
     ocultarLoader();
-    mostrarMensaje("✅ Login correcto",true);
-
-   
-
+    mostrarMensaje("✅ Login correcto", true);
   })
 
   .catch(err=>{
@@ -60,7 +54,6 @@ window.login = function(){
   });
 
 }
-
 
 window.registro = function(){
 
@@ -83,7 +76,6 @@ window.registro = function(){
 
 }
 
-
 window.verPassword=function(){
 
   const pass=document.getElementById("password");
@@ -95,6 +87,4 @@ window.verPassword=function(){
   }
 
 }
-
-
 
