@@ -7,6 +7,8 @@
 </head>
 <body>
 
+<div class="login-box">
+
   <h2>Panel Personal</h2>
 
   <input type="email" id="email" placeholder="Email">
@@ -15,24 +17,23 @@
   <button onclick="login()">Entrar</button>
   <button onclick="registro()">Registrarme</button>
 
-  <!-- Lógica de login / registro -->
-  <script type="module" src="js/auth.js"></script>
+</div>
 
-  <!-- Redirección si ya está logueado -->
-  <script type="module">
-    import { auth } from "./js/firebase.js";
-    import { onAuthStateChanged } from
-      "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+<!-- Lógica de login / registro -->
+<script type="module" src="js/auth.js"></script>
 
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        window.location.href = "dashboard.html";
-      }
-    });
-  </script>
+<!-- Redirección si ya está logueado -->
+<script type="module">
+  import { auth } from "./js/firebase.js";
+  import { onAuthStateChanged } from
+    "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      window.location.href = "dashboard.html";
+    }
+  });
+</script>
 
 </body>
 </html>
-
-
-
