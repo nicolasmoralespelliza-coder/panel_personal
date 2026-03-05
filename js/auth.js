@@ -2,17 +2,17 @@ import { auth } from "./firebase.js";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } 
 from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-/* FUNCION PARA MOSTRAR MENSAJE */
-function mostrarMensaje(texto, tipo="success"){
+/* MENSAJE */
+function mostrarMensaje(texto){
 
   const toast = document.getElementById("toast");
 
   toast.textContent = texto;
 
-  toast.className = "show " + tipo;
+  toast.classList.add("show");
 
-  setTimeout(() => {
-    toast.className = toast.className.replace("show", "");
+  setTimeout(()=>{
+    toast.classList.remove("show");
   },3000);
 
 }
@@ -28,13 +28,13 @@ window.login = function () {
 
     .then(() => {
 
-      mostrarMensaje("Login correcto", "success");
+      mostrarMensaje("✅ Login correcto");
 
     })
 
     .catch(err => {
 
-      mostrarMensaje(err.message, "error");
+      mostrarMensaje("❌ " + err.message);
 
     });
 
@@ -51,13 +51,13 @@ window.registro = function () {
 
     .then(() => {
 
-      mostrarMensaje("Usuario creado", "success");
+      mostrarMensaje("✅ Usuario creado");
 
     })
 
     .catch(err => {
 
-      mostrarMensaje(err.message, "error");
+      mostrarMensaje("❌ " + err.message);
 
     });
 
