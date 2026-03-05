@@ -1,64 +1,94 @@
 import { auth } from "./firebase.js";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } 
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword }
 from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-/* MENSAJE */
-function mostrarMensaje(texto){
+const loader = document.getElementById("loader");
 
-  const toast = document.getElementById("toast");
+function mostrarLoader(){
+loader.style.display="block";
+}
 
-  toast.textContent = texto;
+function ocultarLoader(){
+loader.style.display="none";
+}
 
-  toast.classList.add("show");
+function mostrarMensaje(texto, redirigir=false){
 
-  setTimeout(()=>{
-    toast.classList.remove("show");
-  },3000);
+const modal = document.getElementById("modalMensaje");
+const textoMensaje = document.getElementById("textoMensaje");
+
+textoMensaje.textContent = texto;
+modal.classList.add("show");
+
+if(redirigir){
+window.redirigirDashboard = true;
+}
+
+}
+
+window.cerrarMensaje = function(){
+
+const modal = document.getElementById("modalMensaje");
+modal.classList.remove("show");
+
+if(window.redirigirDashboard){
+window.location.href="dashboard.html";
+}
+
+}
+
+window.login = function(){
+
+const email=document.getElementById("email").value;
+const password=document.getElementById("password").value;
+
+mostrarLoader();
+
+signInWithEmailAndPassword(auth,email,password)
+
+.then(()=>{
+ocultarLoader();
+mostrarMensaje("✅ Login correcto",true);
+})
+
+.catch(err=>{
+ocultarLoader();
+mostrarMensaje("❌ "+err.message);
+})
 
 }
 
 
-/* LOGIN */
-window.login = function () {
+window.registro = function(){
 
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+const email=document.getElementById("email").value;
+const password=document.getElementById("password").value;
 
-  signInWithEmailAndPassword(auth, email, password)
+mostrarLoader();
 
-    .then(() => {
+createUserWithEmailAndPassword(auth,email,password)
 
-      mostrarMensaje("✅ Login correcto");
+.then(()=>{
+ocultarLoader();
+mostrarMensaje("✅ Usuario creado");
+})
 
-    })
+.catch(err=>{
+ocultarLoader();
+mostrarMensaje("❌ "+err.message);
+})
 
-    .catch(err => {
-
-      mostrarMensaje("❌ " + err.message);
-
-    });
-
-};
+}
 
 
-/* REGISTRO */
-window.registro = function () {
+window.verPassword=function(){
 
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+const pass=document.getElementById("password");
 
-  createUserWithEmailAndPassword(auth, email, password)
+if(pass.type==="password"){
+pass.type="text";
+}else{
+pass.type="password";
+}
 
-    .then(() => {
-
-      mostrarMensaje("✅ Usuario creado");
-
-    })
-
-    .catch(err => {
-
-      mostrarMensaje("❌ " + err.message);
-
-    });
-
-};
+}
