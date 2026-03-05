@@ -25,6 +25,19 @@
 <div id="loader" class="loader"></div>
 
 </div>
+  <script type="module" src="js/auth.js"></script>
+
+<script type="module">
+import { auth } from "./js/firebase.js";
+import { onAuthStateChanged }
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+onAuthStateChanged(auth, (user) => {
+if(user){
+window.location.href="dashboard.html";
+}
+});
+</script>
 
 
 <!-- MODAL MENSAJE -->
@@ -40,6 +53,7 @@
 
 </body>
 </html>
+
 
 
 
