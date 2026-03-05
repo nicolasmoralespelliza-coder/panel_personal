@@ -42,9 +42,7 @@ window.login = function(){
     ocultarLoader();
     mostrarMensaje("✅ Login correcto",true);
 
-    setTimeout(()=>{
-      window.location.href="dashboard.html";
-    },1500);
+   
 
   })
 
@@ -89,4 +87,5 @@ window.verPassword=function(){
   }
 
 }
+
 
