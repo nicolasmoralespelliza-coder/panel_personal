@@ -93,7 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       locale: "es",
 
-      height: auto,
+      height: "auto",
 
       
 
