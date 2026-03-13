@@ -380,6 +380,13 @@ li {
   width: 100% !important;
   height: 350px !important;
 }
+#calendar {
+  background: var(--card);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px var(--shadow);
+  margin-top: 20px;
+}
 
 
 
