@@ -381,13 +381,24 @@ li {
   height: 350px !important;
 }
 #calendar {
+  width: 100%;
+  max-width: 1000px;
+  margin: 20px auto;
   background: var(--card);
   padding: 20px;
   border-radius: 12px;
   box-shadow: 0 10px 30px var(--shadow);
-  margin-top: 20px;
 }
 
+/* altura correcta del calendario */
+.fc {
+  width: 100%;
+}
+
+/* que las celdas tengan tamaño normal */
+.fc-daygrid-day {
+  height: 120px;
+}
 
 
 
