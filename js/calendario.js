@@ -95,7 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       height: auto,
 
-      expandRows: true,
+      
 
       headerToolbar: {
         left: "prev,next today",
